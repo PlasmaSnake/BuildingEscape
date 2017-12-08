@@ -38,9 +38,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT playerViewPointLocation, 
 		OUT playerViewPointRotation);
-	// TODO Player View Testing UE_LOG(LogTemp, Warning, TEXT("Location: %s Rotation: %s"), *playerViewPointLocation.ToString(), *playerViewPointRotation.ToString());*/
+	/// TODO Player View Testing UE_LOG(LogTemp, Warning, TEXT("Location: %s Rotation: %s"), *playerViewPointLocation.ToString(), *playerViewPointRotation.ToString());*/
 	FVector LineTraceEnd = playerViewPointLocation + playerViewPointRotation.Vector() * Reach;
-	//Draw a red line for visualization
+	///Draw a red line for visualization
 	DrawDebugLine(
 		GetWorld(),
 		playerViewPointLocation,
@@ -51,8 +51,19 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		0.f,
 		10.f);
 
-	//Ray-cast out to reach distance
+	///Ray-cast out to reach distance
+	FHitResult hit;
+	FCollisionQueryParams traceParameters(FName(TEXT("")), false, GetOwner());
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT hit,
+		playerViewPointLocation,
+		LineTraceEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		traceParameters
+	);
+	AActor *actorHit = hit.GetActor();
+	if (actorHit) UE_LOG(LogTemp, Warning, TEXT("%s is grabbable"), *(actorHit->GetName()));
 
-	// See if item is grabable
+	/// See if item is grabable
 }
 
