@@ -32,10 +32,17 @@ private:
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr;
 
+	FVector LineTraceEnd;
+	FVector playerViewPointLocation;
+	FRotator playerViewPointRotation;
+
 	// Ray-cast and grab what is in reach
 	void Grab();
 	// Release what is grabbed
 	void Release();
+
+	//Sets Line Trace End and Player ViewPoint 
+	void SetLineTraceAndPlayerViewPoint();
 
 	// Find (assumed) attached Physics Handler component
 	void FindPhysicsHandlerComponent();
@@ -44,6 +51,4 @@ private:
 	
 	// Returns hit for first physics body in reach
 	FHitResult GetFirstPhysicsBodyInReach() const;
-
-
 };
