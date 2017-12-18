@@ -8,9 +8,7 @@
 #define OUT
 UGrabber::UGrabber()
 {
-
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 void UGrabber::BeginPlay()
@@ -57,23 +55,27 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 }
 
 void UGrabber::Grab(){
+	
 	///LINE TRACE to See if any actors are reachable with physics body collision channel set
 	SetLineTraceAndPlayerViewPoint();
 	auto hitResult = GetFirstPhysicsBodyInReach();
 	auto ComponentToGrab = hitResult.GetComponent();
 	auto actorHit = hitResult.GetActor();
 	//If Hit then attach physics handle
-	if(actorHit)
+	if (actorHit) {
+		if (!PhysicsHandle) {return;}
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
 			NAME_None,
 			ComponentToGrab->GetOwner()->GetActorLocation(),
 			true
 		);
+	}
 
 }
 
 void UGrabber::Release() {
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -90,7 +92,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// if physics handle is attached
+
+	// if physics handle is attached otherwise break Tick-loop
+	if (!PhysicsHandle) { return; }
 	if (PhysicsHandle->GrabbedComponent){	
 		//move the object held
 		SetLineTraceAndPlayerViewPoint();
